@@ -1,0 +1,32 @@
+<%- include('./partials/header') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="card shadow-sm">
+        <div class="card-body py-5">
+          <i class="bi bi-exclamation-triangle text-danger display-1"></i>
+          
+          <h1 class="mt-4 mb-3"><%= message %></h1>
+          
+          <% if (error && error.status) { %>
+            <p class="lead text-muted">Status: <%= error.status %></p>
+          <% } %>
+          
+          <% if (error && error.stack && process.env.NODE_ENV === 'development') { %>
+            <div class="alert alert-danger mt-4 text-start">
+              <pre class="mb-0"><%= error.stack %></pre>
+            </div>
+          <% } %>
+          
+          <div class="mt-5">
+            <a href="/" class="btn btn-primary me-2">Go to Homepage</a>
+            <button onclick="history.back()" class="btn btn-outline-secondary">Go Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

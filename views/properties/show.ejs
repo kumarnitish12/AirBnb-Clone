@@ -1,0 +1,219 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/properties">Properties</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= property.title %></li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-lg-8">
+      <h1 class="mb-3"><%= property.title %></h1>
+      
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <span class="me-3">
+            <i class="bi bi-star-fill text-primary"></i>
+            <strong><%= property.rating %></strong> (<%= property.reviewCount %> reviews)
+          </span>
+          <span class="me-3">
+            <i class="bi bi-geo-alt"></i>
+            <%= property.location %>
+          </span>
+        </div>
+        <div>
+          <button class="btn btn-outline-secondary btn-sm me-2">
+            <i class="bi bi-share"></i> Share
+          </button>
+          <button class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-heart"></i> Save
+          </button>
+        </div>
+      </div>
+      
+      <!-- Property Image Carousel -->
+      <div id="propertyCarousel" class="carousel slide property-image-carousel mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% property.images.forEach((image, index) => { %>
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+              <img src="<%= image %>" class="d-block w-100" alt="Property image <%= index + 1 %>">
+            </div>
+          <% }) %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <h2 class="h4">Entire <%= property.type %> hosted by Host Name</h2>
+          <p>
+            <%= property.bedrooms %> bedrooms • <%= property.bathrooms %> bathrooms • Up to <%= property.maxGuests %> guests
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <img src="https://via.placeholder.com/60" class="rounded-circle" alt="Host Image" width="60" height="60">
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- Property Description -->
+      <div class="mb-4">
+        <h2 class="h4 mb-3">About this place</h2>
+        <p><%= property.description %></p>
+      </div>
+      
+      <hr>
+      
+      <!-- Amenities -->
+      <div class="mb-4">
+        <h2 class="h4 mb-3">What this place offers</h2>
+        <div class="row">
+          <% property.amenities.forEach(amenity => { %>
+            <div class="col-md-6 mb-2">
+              <i class="bi bi-check-circle-fill me-2 text-success"></i>
+              <%= amenity %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- Map Placeholder -->
+      <div class="mb-4">
+        <h2 class="h4 mb-3">Where you'll be</h2>
+        <div class="map-container">
+          <div class="map-placeholder">
+            <i class="bi bi-map"></i>
+            <h4>Map View</h4>
+            <p><%= property.location %></p>
+          </div>
+        </div>
+        <p>The neighborhood is known for its great dining options and proximity to attractions.</p>
+      </div>
+      
+      <hr>
+      
+      <!-- Reviews -->
+      <div class="mb-4">
+        <h2 class="h4 mb-3">
+          <i class="bi bi-star-fill text-primary me-2"></i>
+          <%= property.rating %> · <%= reviews.length %> reviews
+        </h2>
+        
+        <% if (reviews.length === 0) { %>
+          <p class="text-muted">No reviews yet.</p>
+        <% } else { %>
+          <div class="row mb-4">
+            <% reviews.slice(0, 6).forEach(review => { %>
+              <div class="col-md-6 mb-4">
+                <div class="review-card">
+                  <div class="review-header">
+                    <img src="https://via.placeholder.com/40" alt="<%= review.username %>" class="review-user-avatar">
+                    <div>
+                      <div class="review-user-name"><%= review.username %></div>
+                      <div class="review-date"><%= new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) %></div>
+                    </div>
+                  </div>
+                  <div class="review-rating">
+                    <% for (let i = 0; i < review.rating; i++) { %>
+                      <i class="bi bi-star-fill"></i>
+                    <% } %>
+                    <% for (let i = review.rating; i < 5; i++) { %>
+                      <i class="bi bi-star"></i>
+                    <% } %>
+                  </div>
+                  <p><%= review.comment %></p>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+          
+          <% if (reviews.length > 6) { %>
+            <div class="text-center">
+              <button class="btn btn-outline-secondary">Show all <%= reviews.length %> reviews</button>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+    </div>
+    
+    <!-- Booking Form -->
+    <div class="col-lg-4">
+      <div class="booking-form">
+        <div class="booking-price">
+          $<%= property.pricePerNight %> <span>night</span>
+        </div>
+        
+        <form id="booking-form" action="/bookings" method="POST">
+          <input type="hidden" name="propertyId" value="<%= property.id %>">
+          <input type="hidden" id="total-price-hidden" name="totalPrice" value="">
+          
+          <div class="row mb-3">
+            <div class="col-6">
+              <label for="check-in" class="form-label">Check-in</label>
+              <input type="text" class="form-control" id="check-in" name="checkIn" placeholder="Add date" required>
+            </div>
+            <div class="col-6">
+              <label for="check-out" class="form-label">Check-out</label>
+              <input type="text" class="form-control" id="check-out" name="checkOut" placeholder="Add date" required>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="guests" class="form-label">Guests</label>
+            <select class="form-select" id="guests" name="guests" required>
+              <% for (let i = 1; i <= property.maxGuests; i++) { %>
+                <option value="<%= i %>"><%= i %> <%= i === 1 ? 'guest' : 'guests' %></option>
+              <% } %>
+            </select>
+          </div>
+          
+          <div class="d-grid mb-4">
+            <% if (currentUser) { %>
+              <button type="submit" class="btn btn-primary">Reserve</button>
+            <% } else { %>
+              <a href="/auth/login" class="btn btn-primary">Login to book</a>
+            <% } %>
+          </div>
+          
+          <p class="text-center text-muted mb-4">You won't be charged yet</p>
+          
+          <!-- Price Details -->
+          <div class="mb-2 d-flex justify-content-between">
+            <span id="price-per-night" data-price="<%= property.pricePerNight %>">$<%= property.pricePerNight %> x <span id="nights-count">0</span> nights</span>
+            <span id="subtotal">$0</span>
+          </div>
+          
+          <div class="mb-2 d-flex justify-content-between">
+            <span>Cleaning fee</span>
+            <span id="cleaning-fee">$50</span>
+          </div>
+          
+          <div class="mb-2 d-flex justify-content-between">
+            <span>Service fee</span>
+            <span id="service-fee">$0</span>
+          </div>
+          
+          <div class="booking-total d-flex justify-content-between">
+            <span>Total</span>
+            <span id="total-price">$0</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

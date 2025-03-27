@@ -1,0 +1,8 @@
+{
+  "name": "NodeJS Application",
+  "command": "node app.js",
+  "defaultOpen": "app.js",
+  "restartOn": {
+    "files": ["**/*.js", "**/*.ejs"]
+  }
+}

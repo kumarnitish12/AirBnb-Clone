@@ -1,0 +1,211 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h1 class="mb-4">List Your Property</h1>
+          
+          <form action="/properties" method="POST">
+            <!-- Basic Information -->
+            <div class="mb-4">
+              <h3 class="h5 mb-3">Basic Information</h3>
+              
+              <div class="mb-3">
+                <label for="title" class="form-label">Property Title *</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Enter a catchy title" required>
+                <div class="form-text">Highlight the best features of your place.</div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="type" class="form-label">Property Type *</label>
+                <select class="form-select" id="type" name="type" required>
+                  <option value="" disabled selected>Select property type</option>
+                  <option value="luxury apartment">Luxury Apartment</option>
+                  <option value="vacation home">Vacation Home</option>
+                  <option value="beach house">Beach House</option>
+                  <option value="cabin">Cabin</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="location" class="form-label">Location *</label>
+                <input type="text" class="form-control" id="location" name="location" placeholder="City, State" required>
+              </div>
+            </div>
+            
+            <!-- Details -->
+            <div class="mb-4">
+              <h3 class="h5 mb-3">Property Details</h3>
+              
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="bedrooms" class="form-label">Bedrooms *</label>
+                  <select class="form-select" id="bedrooms" name="bedrooms" required>
+                    <% for (let i = 1; i <= 10; i++) { %>
+                      <option value="<%= i %>"><%= i %></option>
+                    <% } %>
+                  </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                  <label for="bathrooms" class="form-label">Bathrooms *</label>
+                  <select class="form-select" id="bathrooms" name="bathrooms" required>
+                    <% for (let i = 1; i <= 10; i++) { %>
+                      <option value="<%= i %>"><%= i %></option>
+                    <% } %>
+                    <option value="1.5">1.5</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3.5">3.5</option>
+                  </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                  <label for="maxGuests" class="form-label">Max Guests *</label>
+                  <select class="form-select" id="maxGuests" name="maxGuests" required>
+                    <% for (let i = 1; i <= 16; i++) { %>
+                      <option value="<%= i %>"><%= i %> <%= i === 1 ? 'guest' : 'guests' %></option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="price" class="form-label">Price per Night (USD) *</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control" id="price" name="price" min="1" step="1" placeholder="100" required>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="mb-4">
+              <h3 class="h5 mb-3">Description</h3>
+              
+              <div class="mb-3">
+                <label for="description" class="form-label">Property Description *</label>
+                <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your property, the location, features, and what makes it special..." required></textarea>
+              </div>
+            </div>
+            
+            <!-- Amenities -->
+            <div class="mb-4">
+              <h3 class="h5 mb-3">Amenities</h3>
+              
+              <div class="row">
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="WiFi" id="wifi" name="amenities">
+                    <label class="form-check-label" for="wifi">WiFi</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Kitchen" id="kitchen" name="amenities">
+                    <label class="form-check-label" for="kitchen">Kitchen</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Pool" id="pool" name="amenities">
+                    <label class="form-check-label" for="pool">Pool</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Hot Tub" id="hot-tub" name="amenities">
+                    <label class="form-check-label" for="hot-tub">Hot Tub</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Air Conditioning" id="ac" name="amenities">
+                    <label class="form-check-label" for="ac">Air Conditioning</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Heating" id="heating" name="amenities">
+                    <label class="form-check-label" for="heating">Heating</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Washer" id="washer" name="amenities">
+                    <label class="form-check-label" for="washer">Washer</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Dryer" id="dryer" name="amenities">
+                    <label class="form-check-label" for="dryer">Dryer</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Parking" id="parking" name="amenities">
+                    <label class="form-check-label" for="parking">Parking</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="TV" id="tv" name="amenities">
+                    <label class="form-check-label" for="tv">TV</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Gym" id="gym" name="amenities">
+                    <label class="form-check-label" for="gym">Gym</label>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="Beach Access" id="beach" name="amenities">
+                    <label class="form-check-label" for="beach">Beach Access</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-3">
+                <label for="other-amenities" class="form-label">Other Amenities</label>
+                <input type="text" class="form-control" id="other-amenities" name="otherAmenities" placeholder="Separate with commas (e.g., BBQ Grill, Fire Pit, Game Room)">
+              </div>
+            </div>
+            
+            <!-- Images -->
+            <div class="mb-4">
+              <h3 class="h5 mb-3">Images</h3>
+              <p class="text-muted">Images will be selected automatically based on your property type.</p>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="/dashboard" class="btn btn-outline-secondary me-md-2">Cancel</a>
+              <button type="submit" class="btn btn-primary">Create Listing</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(event) {
+      const amenitiesCheckboxes = document.querySelectorAll('input[name="amenities"]:checked');
+      const otherAmenitiesInput = document.getElementById('other-amenities');
+      
+      // If no amenities are checked and other amenities is empty, check WiFi by default
+      if (amenitiesCheckboxes.length === 0 && !otherAmenitiesInput.value.trim()) {
+        document.getElementById('wifi').checked = true;
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

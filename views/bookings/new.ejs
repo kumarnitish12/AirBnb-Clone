@@ -1,0 +1,166 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/properties/<%= property.id %>"><%= property.title %></a></li>
+          <li class="breadcrumb-item active" aria-current="page">Book</li>
+        </ol>
+      </nav>
+      
+      <h1 class="mb-4">Complete your booking</h1>
+      
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <img src="<%= property.images[0] %>" alt="<%= property.title %>" class="img-fluid rounded">
+            </div>
+            <div class="col-md-8">
+              <h5><%= property.title %></h5>
+              <p class="mb-1"><i class="bi bi-geo-alt"></i> <%= property.location %></p>
+              <div class="mb-2">
+                <span class="me-3">
+                  <i class="bi bi-star-fill text-primary"></i>
+                  <strong><%= property.rating %></strong> (<%= property.reviewCount %> reviews)
+                </span>
+              </div>
+              <p class="mb-0">
+                <%= property.bedrooms %> bedrooms • <%= property.bathrooms %> bathrooms • Up to <%= property.maxGuests %> guests
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h4 mb-4">Your trip</h2>
+          
+          <form id="booking-form" action="/bookings" method="POST">
+            <input type="hidden" name="propertyId" value="<%= property.id %>">
+            <input type="hidden" id="total-price-hidden" name="totalPrice" value="">
+            
+            <div class="mb-4">
+              <h5 class="mb-3">Dates</h5>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="check-in" class="form-label">Check-in</label>
+                  <input type="text" class="form-control" id="check-in" name="checkIn" placeholder="Add date" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="check-out" class="form-label">Check-out</label>
+                  <input type="text" class="form-control" id="check-out" name="checkOut" placeholder="Add date" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h5 class="mb-3">Guests</h5>
+              <div class="mb-3">
+                <label for="guests" class="form-label">Number of guests</label>
+                <select class="form-select" id="guests" name="guests" required>
+                  <% for (let i = 1; i <= property.maxGuests; i++) { %>
+                    <option value="<%= i %>"><%= i %> <%= i === 1 ? 'guest' : 'guests' %></option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h5 class="mb-3">Price details</h5>
+              <div class="row mb-2">
+                <div class="col-8">
+                  <span id="price-per-night" data-price="<%= property.pricePerNight %>">$<%= property.pricePerNight %> x <span id="nights-count">0</span> nights</span>
+                </div>
+                <div class="col-4 text-end">
+                  <span id="subtotal">$0</span>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-8">Cleaning fee</div>
+                <div class="col-4 text-end" id="cleaning-fee">$50</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-8">Service fee</div>
+                <div class="col-4 text-end" id="service-fee">$0</div>
+              </div>
+              <hr>
+              <div class="row fw-bold">
+                <div class="col-8">Total (USD)</div>
+                <div class="col-4 text-end" id="total-price">$0</div>
+              </div>
+            </div>
+            
+            <div class="alert alert-info mb-4">
+              <div class="d-flex">
+                <div class="me-3">
+                  <i class="bi bi-info-circle-fill fs-4"></i>
+                </div>
+                <div>
+                  <strong>Free cancellation for 48 hours.</strong>
+                  <p class="mb-0">Cancel before check-in on <%= new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> for a partial refund.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">Confirm and pay</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4 mt-4 mt-lg-0">
+      <div class="card shadow-sm position-sticky" style="top: 20px;">
+        <div class="card-body">
+          <h5 class="mb-3">Payment Details</h5>
+          <div class="mb-3">
+            <label for="card-name" class="form-label">Name on card</label>
+            <input type="text" class="form-control" id="card-name" placeholder="Enter name on card">
+          </div>
+          <div class="mb-3">
+            <label for="card-number" class="form-label">Card number</label>
+            <input type="text" class="form-control" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="card-expiry" class="form-label">Expiration</label>
+              <input type="text" class="form-control" id="card-expiry" placeholder="MM/YY">
+            </div>
+            <div class="col-6 mb-3">
+              <label for="card-cvc" class="form-label">CVC</label>
+              <input type="text" class="form-control" id="card-cvc" placeholder="CVC">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="billing-zip" class="form-label">Billing Zip/Postal code</label>
+            <input type="text" class="form-control" id="billing-zip" placeholder="Enter postal code">
+          </div>
+          <div class="form-text text-muted mb-3">
+            <i class="bi bi-lock-fill"></i> Your payment information is secure. We use encryption to keep your data safe.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // This script is a placeholder - the booking.js script will handle the actual functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if form fields are filled with mock data for demo purposes
+    const cardFields = document.querySelectorAll('#card-name, #card-number, #card-expiry, #card-cvc, #billing-zip');
+    cardFields.forEach(field => {
+      field.addEventListener('input', function() {
+        // Form is just for display, actual booking will work without payment info
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

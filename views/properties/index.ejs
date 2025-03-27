@@ -1,0 +1,144 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1><%= title %></h1>
+      <p>Showing <span id="property-count"><%= properties.length %></span> properties</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+      <!-- Sort Dropdown -->
+      <div class="dropdown d-inline-block">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sort-down me-1"></i> Sort
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+          <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+          <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+          <li><a class="dropdown-item" href="#">Top Rated</a></li>
+          <li><a class="dropdown-item" href="#">Most Popular</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <form action="/search" method="GET" id="filter-form">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location" placeholder="Where are you going?" value="<%= searchParams.location || '' %>">
+              </div>
+              <div class="col-md-2">
+                <label for="check-in" class="form-label">Check-in</label>
+                <input type="text" class="form-control" id="search-check-in" name="checkIn" placeholder="Add date" value="<%= searchParams.checkIn || '' %>">
+              </div>
+              <div class="col-md-2">
+                <label for="check-out" class="form-label">Check-out</label>
+                <input type="text" class="form-control" id="search-check-out" name="checkOut" placeholder="Add date" value="<%= searchParams.checkOut || '' %>">
+              </div>
+              <div class="col-md-2">
+                <label for="guests" class="form-label">Guests</label>
+                <select class="form-select" id="guests" name="guests">
+                  <option value="">Any</option>
+                  <option value="1" <%= searchParams.guests === '1' ? 'selected' : '' %>>1 guest</option>
+                  <option value="2" <%= searchParams.guests === '2' ? 'selected' : '' %>>2 guests</option>
+                  <option value="3" <%= searchParams.guests === '3' ? 'selected' : '' %>>3 guests</option>
+                  <option value="4" <%= searchParams.guests === '4' ? 'selected' : '' %>>4 guests</option>
+                  <option value="5" <%= searchParams.guests === '5' ? 'selected' : '' %>>5 guests</option>
+                  <option value="6" <%= searchParams.guests === '6' ? 'selected' : '' %>>6+ guests</option>
+                </select>
+              </div>
+              <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="bi bi-search me-2"></i> Update Search
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Filter Pills -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="property-type-pills">
+        <div class="property-type-pill active" data-type="all">
+          <i class="bi bi-house-door"></i> All Properties
+        </div>
+        <div class="property-type-pill" data-type="beach house">
+          <i class="bi bi-water"></i> Beach Houses
+        </div>
+        <div class="property-type-pill" data-type="cabin">
+          <i class="bi bi-tree"></i> Cabins
+        </div>
+        <div class="property-type-pill" data-type="luxury apartment">
+          <i class="bi bi-building"></i> Luxury Apartments
+        </div>
+        <div class="property-type-pill" data-type="vacation home">
+          <i class="bi bi-house"></i> Vacation Homes
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Active Filters -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div id="active-filters">
+        <!-- Filter badges will be added here dynamically -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Property Listings -->
+  <div class="row">
+    <% if (properties.length === 0) { %>
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-search display-1 text-muted"></i>
+        <h3 class="mt-3">No properties found</h3>
+        <p class="text-muted">Try adjusting your search criteria</p>
+      </div>
+    <% } else { %>
+      <% properties.forEach(property => { %>
+        <div class="col-md-6 col-lg-4 mb-4 property-card-wrapper" data-type="<%= property.type %>" data-price="<%= property.pricePerNight %>" data-bedrooms="<%= property.bedrooms %>" data-amenities="<%= property.amenities.join(',') %>">
+          <div class="property-card">
+            <a href="/properties/<%= property.id %>">
+              <img src="<%= property.images[0] %>" alt="<%= property.title %>" class="img-fluid">
+            </a>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title"><a href="/properties/<%= property.id %>"><%= property.title %></a></h5>
+                <a href="#" onclick="toggleLike(this); return false;" class="text-dark fs-5">
+                  <i class="bi bi-heart"></i>
+                </a>
+              </div>
+              <p class="property-location"><i class="bi bi-geo-alt"></i> <%= property.location %></p>
+              <div class="d-flex justify-content-between">
+                <div>
+                  <span class="badge bg-light text-dark mb-2"><%= property.bedrooms %> bedrooms</span>
+                  <span class="badge bg-light text-dark mb-2"><%= property.bathrooms %> bathrooms</span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="property-price mb-0">$<%= property.pricePerNight %> <span>/ night</span></p>
+                <div class="property-rating">
+                  <i class="bi bi-star-fill"></i>
+                  <span><%= property.rating %> (<%= property.reviewCount %>)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
