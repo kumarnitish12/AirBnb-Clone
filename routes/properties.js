@@ -69,10 +69,32 @@ router.get('/:id', (req, res) => {
   // Get reviews for this property
   const propertyReviews = reviews.filter(r => r.propertyId === property.id);
   
+  // Generate share URL
+  const shareUrl = `${req.protocol}://${req.get('host')}/properties/${property.id}`;
+  
   res.render('properties/show', { 
     property,
     reviews: propertyReviews,
+    shareUrl,
     title: property.title
+  });
+});
+
+// Share property
+router.get('/:id/share', (req, res) => {
+  const property = properties.find(p => p.id === parseInt(req.params.id));
+  
+  if (!property) {
+    req.flash('error', 'Property not found');
+    return res.redirect('/properties');
+  }
+
+  const shareUrl = `${req.protocol}://${req.get('host')}/properties/${property.id}`;
+  
+  res.render('properties/share', {
+    property,
+    shareUrl,
+    title: `Share ${property.title}`
   });
 });
 

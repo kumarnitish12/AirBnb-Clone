@@ -6,6 +6,12 @@ const { isLoggedIn, isLoggedOut } = require('../middleware/auth');
 
 // Show login form
 router.get('/login', isLoggedOut, (req, res) => {
+  res.render('login', { 
+    title: 'Login',
+    showPassword: false // Add this flag for password visibility
+  });
+});
+router.get('/login', isLoggedOut, (req, res) => {
   res.render('login', { title: 'Login' });
 });
 
